@@ -26,6 +26,7 @@ setup(
     entry_points={
         'console_scripts': [
             'read_and_publish = cam_reading.read_and_publish:main',
+            'order_test_euler = cam_reading.order_test_euler:main',
         ],
     },
 )
