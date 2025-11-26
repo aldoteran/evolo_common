@@ -26,6 +26,14 @@ def generate_launch_description():
         parameters=[]
     )
 
+    captain_interface = Node(
+        package='evolo_captain_interface',
+        namespace=robot_ns,
+        executable='interface',
+        name="captain_interface",
+        parameters=[]
+    )
+
     serial_odom_init_node = Node(
         package='evolo_captain_to_odom',
         namespace=robot_ns,
@@ -33,7 +41,7 @@ def generate_launch_description():
         name="captain_odom_initializer",
         parameters=[{"update_rate": 0.1,
                      "verbose": True,
-                     "captain_topic" : evoloTopics.EVOLO_CAPTAIN_FROM
+                     "captain_topic" : evoloTopics.EVOLO_CAPTAIN_STATE
                      }]
     )
 
@@ -47,7 +55,7 @@ def generate_launch_description():
                      "output_rate" : 5.0,
                      "verbose_setup" : False,
                      "verbose_conversion" : False,
-                     "input_topic" : evoloTopics.EVOLO_CAPTAIN_FROM
+                     "input_topic" : evoloTopics.EVOLO_CAPTAIN_STATE
                     }]
     )
     '''
@@ -66,5 +74,6 @@ def generate_launch_description():
         robot_ns_launch_arg, 
         serial_bridge_node,
         serial_odom_init_node,
-        serial_odom_node
+        serial_odom_node,
+        captain_interface
     ])

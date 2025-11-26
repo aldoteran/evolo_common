@@ -9,6 +9,7 @@ from tf2_ros.static_transform_broadcaster import StaticTransformBroadcaster
 # ROS2 messages
 from geometry_msgs.msg import TransformStamped
 from evolo_msgs.msg import Topics as evoloTopics
+from evolo_msgs.msg import CaptainState
 from std_msgs.msg import String
 import json
 
@@ -37,7 +38,7 @@ class MapOdomInitializer(Node):
         self.declare_parameter("verbose", False)
         self.verbose = self.get_parameter("verbose").value
 
-        self.declare_parameter("captain_topic", "/captain_received")
+        self.declare_parameter("captain_topic", evoloTopics.EVOLO_CAPTAIN_STATE)
         captain_topic = self.get_parameter("captain_topic").value
 
         self._log(f'map -> odom initialization')
@@ -47,9 +48,9 @@ class MapOdomInitializer(Node):
         self.odom_transform = None
 
         self.subscription = self.create_subscription(
-            msg_type=String,
+            msg_type=CaptainState,
             topic=captain_topic,
-            callback=self.ins_callback,
+            callback=self.captain_callback,
             qos_profile=10
         )
 
@@ -60,17 +61,15 @@ class MapOdomInitializer(Node):
         # The purpose of republishing is to account for situations in which the ros bag is split
         self.create_timer(timer_period_sec=float(1.0 / self.update_rate), callback=self.transform_timer)
 
-    def ins_callback(self, msg: String):
+    def captain_callback(self, msg: CaptainState):
         if self.origin_set:
             return
         
-        data = json.loads(msg.data)
-        data = data['Captain']
-        mqtt_latitude = data[1]
-        mqtt_longitude = data[2]
+        captain_latitude = msg.lat
+        captain_longitude = msg.lon
 
-        latitude = float(mqtt_latitude)
-        longitude = float(mqtt_longitude)
+        latitude = float(captain_latitude)
+        longitude = float(captain_longitude)
         altitude = 0.0
 
         # Use the first GPS fix as map origin

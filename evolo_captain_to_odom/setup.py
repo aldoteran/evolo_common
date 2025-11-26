@@ -13,7 +13,7 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='benjamin',
+    maintainer='Niklas',
     maintainer_email='nrol@kth.se',
     description='',
     license='MIT',

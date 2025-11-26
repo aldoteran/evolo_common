@@ -27,6 +27,7 @@ from sensor_msgs.msg import Imu
 
 # SMaRC Topics
 from evolo_msgs.msg import Topics as evoloTopics
+from evolo_msgs.msg import CaptainState
 from smarc_msgs.msg import Topics as SmarcTopics
 from smarc_mission_msgs.msg import Topics as MissionTopics
 
@@ -124,7 +125,7 @@ class Captain2Odom(Node):
 
         # Original un synced
         self._log(f"Subscribing to INS topic :{self.input_topic}")
-        self.ins_sub = self.create_subscription(msg_type=String, topic=self.input_topic,
+        self.ins_sub = self.create_subscription(msg_type=CaptainState, topic=self.input_topic,
                                                 callback=self.captain_callback,
                                                 qos_profile=10)
 
@@ -184,7 +185,7 @@ class Captain2Odom(Node):
 
         # Topic names
         # Subscriptions
-        self.declare_parameter("input_topic", evoloTopics.EVOLO_MQTT_RECEIVE)
+        self.declare_parameter("input_topic", evoloTopics.EVOLO_CAPTAIN_STATE)
 
         # Publishers
         self.declare_parameter("output_odom_topic", SmarcTopics.ODOM_TOPIC)
@@ -274,32 +275,23 @@ class Captain2Odom(Node):
     # tf_name_callback: (Alternative) Checks the tf buffer for the correct naming convention to determine the root
     # of the tf tree
 
-    def captain_callback(self, msg):
+    def captain_callback(self, msg: CaptainState):
         #self.get_logger().info("Received ROS message " + str(msg.data))
-
-        try:
-            data = json.loads(msg.data)
-            data = data['Captain']
-            self.get_logger().info("Data from captain" + str(data))
-            self.millis = data[0]
-            self.latitude = float(data[1])
-            self.longitude = float(data[2])
-            self.sog = float(data[3])
-            self.cog = float(data[4])
-            self.pitch = float(data[5])
-            self.roll = float(data[6])
-            '''
-            self.get_logger().info("millis " + str(self.millis))
-            self.get_logger().info("latitide " + str(self.latitude))
-            self.get_logger().info("longitude " + str(self.longitude))
-            self.get_logger().info("sog " + str(self.sog))
-            self.get_logger().info("cog " + str(self.cog))
-            self.get_logger().info("pitch " + str(self.pitch))
-            self.get_logger().info("roll " + str(self.roll))
-            '''
-        except Exception as e:
-            pass
-
+        self.millis = msg.ms
+        self.latitude = msg.lat
+        self.longitude = msg.lon
+        self.sog = msg.sog
+        self.cog = msg.cog
+        self.pitch = msg.pitch
+        self.roll = msg.roll
+        
+        self.get_logger().info("millis " + str(self.millis))
+        self.get_logger().info("latitide " + str(self.latitude))
+        self.get_logger().info("longitude " + str(self.longitude))
+        self.get_logger().info("sog " + str(self.sog))
+        self.get_logger().info("cog " + str(self.cog))
+        self.get_logger().info("pitch " + str(self.pitch))
+        self.get_logger().info("roll " + str(self.roll))
 
     def publisher_callback(self):
 

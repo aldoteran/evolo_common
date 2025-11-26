@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 import glob, os
 
-package_name = 'evolo_mqtt_bridge'
+package_name = 'evolo_captain_interface'
 
 setup(
     name=package_name,
@@ -27,7 +27,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'bridge = evolo_mqtt_bridge.mqtt_bridge:main',
+            'interface = evolo_captain_interface.evolo_captain_interface:main',
         ],
     },
 )
