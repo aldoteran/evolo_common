@@ -51,7 +51,7 @@ except ImportError:
     from helpers.spatial_helpers import normalize_angle_deg
 
 
-class Mqtt2Odom(Node):
+class Captain2Odom(Node):
     """
     This node will convert output from the INS to odometry messages
     """
@@ -125,7 +125,7 @@ class Mqtt2Odom(Node):
         # Original un synced
         self._log(f"Subscribing to INS topic :{self.input_topic}")
         self.ins_sub = self.create_subscription(msg_type=String, topic=self.input_topic,
-                                                callback=self.mqtt_callback,
+                                                callback=self.captain_callback,
                                                 qos_profile=10)
 
         # self.ins_sub = Subscriber(self, Ins, self.input_topic)  # msg_type and topic name
@@ -274,7 +274,7 @@ class Mqtt2Odom(Node):
     # tf_name_callback: (Alternative) Checks the tf buffer for the correct naming convention to determine the root
     # of the tf tree
 
-    def mqtt_callback(self, msg):
+    def captain_callback(self, msg):
         #self.get_logger().info("Received ROS message " + str(msg.data))
 
         try:
@@ -515,7 +515,7 @@ class Mqtt2Odom(Node):
 
 def main(args=None, namespace=None):
     rclpy.init(args=args)
-    node = Mqtt2Odom(namespace=namespace)
+    node = Captain2Odom(namespace=namespace)
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:

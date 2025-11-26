@@ -18,26 +18,26 @@ def generate_launch_description():
     )
 
 
-    mqtt_bridge_node = Node(
-        package='evolo_mqtt_bridge',
+    serial_bridge_node = Node(
+        package='evolo_serial_bridge',
         namespace=robot_ns,
         executable='bridge',
-        name="evolo_mqtt_bridge",
+        name="evolo_serial_bridge",
         parameters=[]
     )
 
-    mqtt_odom_init_node = Node(
+    serial_odom_init_node = Node(
         package='evolo_captain_to_odom',
         namespace=robot_ns,
         executable='odom_initializer',
         name="captain_odom_initializer",
         parameters=[{"update_rate": 0.1,
                      "verbose": True,
-                     "captain_topic" : evoloTopics.EVOLO_MQTT_RECEIVE
+                     "captain_topic" : evoloTopics.EVOLO_CAPTAIN_FROM
                      }]
     )
 
-    mqtt_odom_node = Node(
+    serial_odom_node = Node(
         package='evolo_captain_to_odom',
         namespace=robot_ns,
         executable='captain_odom',
@@ -47,7 +47,7 @@ def generate_launch_description():
                      "output_rate" : 5.0,
                      "verbose_setup" : False,
                      "verbose_conversion" : False,
-                     "input_topic" : evoloTopics.EVOLO_MQTT_RECEIVE
+                     "input_topic" : evoloTopics.EVOLO_CAPTAIN_FROM
                     }]
     )
     '''
@@ -64,7 +64,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         robot_ns_launch_arg, 
-        mqtt_bridge_node,
-        mqtt_odom_init_node,
-        mqtt_odom_node
+        serial_bridge_node,
+        serial_odom_init_node,
+        serial_odom_node
     ])

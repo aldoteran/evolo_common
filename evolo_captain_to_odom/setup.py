@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'evolo_mqtt_to_odom'
+package_name = 'evolo_captain_to_odom'
 
 setup(
     name=package_name,
@@ -24,8 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'mqtt_odom = evolo_mqtt_to_odom.mqtt_to_odom:main',
-            'odom_initializer = evolo_mqtt_to_odom.mqtt_map_odom_initializer:main',
+            'captain_odom = evolo_captain_to_odom.captain_to_odom:main',
+            'odom_initializer = evolo_captain_to_odom.captain_map_odom_initializer:main',
         ],
     },
 )

@@ -30,21 +30,25 @@ class MapOdomInitializer(Node):
 
     def __init__(self, namespace=None):
         super().__init__('map_odom_initializer', namespace=namespace)
-        self._log(f'map -> odom initialization')
-        self._log(f'Waiting for initial Lat/Lon coordinates: {evoloTopics.EVOLO_MQTT_RECEIVE}')
-
+        
         self.declare_parameter('update_rate', 1.0)
         self.update_rate = self.get_parameter('update_rate').value
 
         self.declare_parameter("verbose", False)
         self.verbose = self.get_parameter("verbose").value
 
+        self.declare_parameter("captain_topic", "/captain_received")
+        captain_topic = self.get_parameter("captain_topic").value
+
+        self._log(f'map -> odom initialization')
+        self._log(f'Waiting for initial Lat/Lon coordinates: {captain_topic}')
+
         self.base_transform = None
         self.odom_transform = None
 
         self.subscription = self.create_subscription(
             msg_type=String,
-            topic=evoloTopics.EVOLO_MQTT_RECEIVE,
+            topic=captain_topic,
             callback=self.ins_callback,
             qos_profile=10
         )
